@@ -333,6 +333,7 @@ textarea {
   flex-direction: column;
   gap: 6px;
   padding: 2px;
+  cursor: text;
 }
 
 .q-empty {
@@ -343,12 +344,17 @@ textarea {
   font-size: 12px;
   color: var(--q-fg);
   opacity: 0.65;
+  cursor: pointer;
+}
+
+.q-add {
+  flex: 0 0 auto;
 }
 
 .q-add input {
-  background: transparent;
-  border-color: transparent;
-  color: var(--q-fg);
+  background: var(--panel-2);
+  border-color: var(--border-strong);
+  color: var(--text);
   padding: 6px 8px;
 }
 
@@ -360,7 +366,7 @@ textarea {
 
 .q-add input::placeholder {
   color: var(--q-fg);
-  opacity: 0.7;
+  opacity: 0.9;
 }
 
 .q-over-ring {
@@ -493,6 +499,31 @@ textarea {
 
 .task-del:hover {
   color: var(--danger);
+}
+
+.task-context-menu {
+  position: fixed;
+  z-index: 1000;
+  min-width: 152px;
+  padding: 4px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+}
+
+.task-context-menu-item {
+  display: block;
+  width: 100%;
+  padding: 7px 9px;
+  border-radius: 5px;
+  color: var(--danger);
+  text-align: left;
+}
+
+.task-context-menu-item:hover,
+.task-context-menu-item:focus-visible {
+  background: var(--panel-2);
 }
 
 .drag-ghost {

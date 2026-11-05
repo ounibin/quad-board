@@ -27,14 +27,24 @@ function QuadrantColumn({
 }) {
   const addTask = useStore((s) => s.addTask)
   const [text, setText] = useState('')
+  const [isAdding, setIsAdding] = useState(false)
   const { setNodeRef, isOver } = useDroppable({ id: `q:${quadrant}` })
   const meta = QUADRANT_META[quadrant]
 
-  const submit = () => {
-    const t = text.trim()
+  const submit = (value: string) => {
+    const t = value.trim()
     if (!t) return
     addTask(t, quadrant)
     setText('')
+  }
+
+  const startAdding = (target: EventTarget, currentTarget: EventTarget) => {
+    if (
+      target === currentTarget ||
+      (target instanceof Element && target.closest('.q-empty'))
+    ) {
+      setIsAdding(true)
+    }
   }
 
   return (
@@ -46,23 +56,34 @@ function QuadrantColumn({
         </div>
         <span className="q-count">{tasks.length}</span>
       </header>
-      <div className="q-list">
+      <div className="q-list" onClick={(e) => startAdding(e.target, e.currentTarget)}>
         {tasks.map((t) => (
           <TaskCard key={t.id} task={t} />
         ))}
-        {tasks.length === 0 && (
-          <div className="q-empty">{canDrag ? '把任务拖到这里，或直接在下方添加' : '这里还没有任务'}</div>
+        {tasks.length === 0 && !isAdding && (
+          <div className="q-empty">{canDrag ? '点击这里快速添加任务，也可以拖动任务到此处' : '点击这里快速添加任务'}</div>
         )}
-      </div>
-      <div className="q-add">
-        <input
-          value={text}
-          placeholder="＋ 添加任务，回车确认"
-          onChange={(e) => setText(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') submit()
-          }}
-        />
+        {isAdding && (
+          <div className="q-add">
+            <input
+              autoFocus
+              value={text}
+              placeholder="＋ 点击此处，添加任务"
+              onChange={(e) => setText(e.target.value)}
+              onBlur={(e) => submit(e.currentTarget.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault()
+                  submit(e.currentTarget.value)
+                }
+                if (e.key === 'Escape') {
+                  setText('')
+                  setIsAdding(false)
+                }
+              }}
+            />
+          </div>
+        )}
       </div>
       {isOver && <div className="q-over-ring" />}
     </section>
